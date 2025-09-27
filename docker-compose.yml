@@ -1,26 +1,21 @@
-﻿services:
-  mysql:
-    image: mysql:8.0
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: recetas
-      MYSQL_USER: user
-      MYSQL_PASSWORD: pass
-    ports:
-      - "3307:3306"
-    command: ["--default-authentication-plugin=mysql_native_password"]
-    volumes:
-      - dbdata:/var/lib/mysql
-      - ./sql/schema.sql:/docker-entrypoint-initdb.d/1-schema.sql:ro
-
-  recetas_ms:
-    build: .
+# compose-api.yml  (solo API; BD está fuera en otra VM)
+services:
+  api:
+    build:
+      context: .
     env_file:
       - .env
     ports:
+      # API escucha 8080 dentro; exponemos 8081 hacia afuera
       - "8081:8080"
-    depends_on:
-      - mysql
-
-volumes:
-  dbdata:
+    restart: unless-stopped
+    command: >
+      uvicorn app.main:app
+      --host 0.0.0.0
+      --port 8080
+      --proxy-headers
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
