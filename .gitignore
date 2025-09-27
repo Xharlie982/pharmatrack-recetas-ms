@@ -1,0 +1,14 @@
+﻿__pycache__/
+*.pyc
+.env
+.env.*
+.envrc
+.vscode/
+.idea/
+.venv/
+dist/
+build/
+*.log
+dbdata/
+# Docker artefacts
+*.pid
