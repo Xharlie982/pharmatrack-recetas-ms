@@ -1,4 +1,5 @@
 # PharmaTrack – Recetas y Dispensación
+
 ---
 ## 1) Instalar Docker y preparar datos
 
